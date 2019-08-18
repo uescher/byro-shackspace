@@ -63,6 +63,7 @@ def process_bank_csv(sender, signal, **kwargs):
         if not booking:
             t = Transaction.objects.create(
                 value_datetime=datetime.strptime(line.get('Buchungstag'), '%d.%m.%Y'),
+                user_or_context='shack_bank_csv_importer',
             )
             Booking.objects.create(
                 transaction=t,
@@ -94,6 +95,7 @@ def match_transaction(sender, signal, **kwargs):
         'amount': abs(balances['debit'] - balances['credit']),
         'account': SpecialAccounts.fees_receivable,
         'member': member,
+        'user_or_context': 'shack_bank_csv_importer',
     }
 
     if balances['debit'] > balances['credit']:
